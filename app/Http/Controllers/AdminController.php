@@ -8,28 +8,30 @@ class AdminController extends Controller
 {
     private function getNetworkIp()
     {
-        $ip = '127.0.0.1';
-        try {
-            if (function_exists('socket_create')) {
-                $sock = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
-                @socket_connect($sock, "8.8.8.8", 53);
-                socket_getsockname($sock, $ip);
-                socket_close($sock);
-            } elseif (PHP_OS_FAMILY === 'Windows') {
-                exec('route print 0.0.0.0', $output);
-                foreach ($output as $line) {
-                    if (preg_match('/0\.0\.0\.0\s+0\.0\.0\.0\s+[\d\.]+\s+([\d\.]+)/', $line, $matches)) {
-                        $ip = $matches[1];
-                        break;
+        return \Illuminate\Support\Facades\Cache::remember('network_ip', 3600, function() {
+            $ip = '127.0.0.1';
+            try {
+                if (function_exists('socket_create')) {
+                    $sock = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
+                    @socket_connect($sock, "8.8.8.8", 53);
+                    socket_getsockname($sock, $ip);
+                    socket_close($sock);
+                } elseif (PHP_OS_FAMILY === 'Windows') {
+                    exec('route print 0.0.0.0', $output);
+                    foreach ($output as $line) {
+                        if (preg_match('/0\.0\.0\.0\s+0\.0\.0\.0\s+[\d\.]+\s+([\d\.]+)/', $line, $matches)) {
+                            $ip = $matches[1];
+                            break;
+                        }
                     }
+                } else {
+                    $ip = gethostbyname(gethostname());
                 }
-            } else {
+            } catch (\Exception $e) {
                 $ip = gethostbyname(gethostname());
             }
-        } catch (\Exception $e) {
-            $ip = gethostbyname(gethostname());
-        }
-        return $ip;
+            return $ip;
+        });
     }
 
     public function index(Request $request)

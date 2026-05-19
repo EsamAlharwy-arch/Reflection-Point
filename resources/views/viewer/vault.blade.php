@@ -286,19 +286,19 @@
         }
 
         /* Color-coded file previews inside grid */
-        .files-container.grid-layout .file-card[data-type="pdf"] .icon-preview {
+        .file-card[data-type="pdf"] .icon-preview {
             background: radial-gradient(circle, rgba(239, 68, 68, 0.08) 0%, transparent 70%);
             color: #ef4444;
         }
-        .files-container.grid-layout .file-card[data-type="image"] .icon-preview {
+        .file-card[data-type="image"] .icon-preview {
             background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, transparent 70%);
             color: #10b981;
         }
-        .files-container.grid-layout .file-card[data-type="video"] .icon-preview {
+        .file-card[data-type="video"] .icon-preview {
             background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
             color: #3b82f6;
         }
-        .files-container.grid-layout .file-card[data-type="other"] .icon-preview {
+        .file-card[data-type="other"] .icon-preview {
             background: radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 70%);
             color: #8b5cf6;
         }
@@ -331,7 +331,7 @@
             margin-top: auto;
         }
 
-        .files-container.grid-layout .badge {
+        .badge {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border-color);
             color: var(--text-muted);
@@ -339,6 +339,7 @@
             border-radius: 0.375rem;
             font-size: 0.75rem;
             font-weight: 500;
+            text-transform: uppercase;
         }
 
         /* List View Layout */
@@ -352,11 +353,11 @@
             background: var(--surface-color);
             border: 1px solid var(--border-color);
             border-radius: 0.75rem;
-            padding: 1rem 1.5rem;
-            display: grid;
-            grid-template-columns: 48px 1fr auto auto;
+            padding: 0.75rem 1.25rem;
+            display: flex;
+            flex-direction: row;
             align-items: center;
-            gap: 1.5rem;
+            gap: 1.25rem;
             cursor: pointer;
             transition: all 0.2s;
         }
@@ -364,7 +365,6 @@
         .files-container.list-layout .file-card:hover {
             border-color: rgba(255, 255, 255, 0.15);
             background: rgba(255, 255, 255, 0.02);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             transform: translateX(4px);
         }
 
@@ -372,13 +372,19 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
         }
 
-        /* List color-codes */
-        .files-container.list-layout .file-card[data-type="pdf"] .icon-preview { color: #ef4444; }
-        .files-container.list-layout .file-card[data-type="image"] .icon-preview { color: #10b981; }
-        .files-container.list-layout .file-card[data-type="video"] .icon-preview { color: #3b82f6; }
-        .files-container.list-layout .file-card[data-type="other"] .icon-preview { color: #8b5cf6; }
+        .files-container.list-layout .card-body {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            flex: 1;
+            gap: 1.5rem;
+        }
 
         .files-container.list-layout .file-name {
             font-size: 1rem;
@@ -388,48 +394,14 @@
             overflow: hidden;
             text-overflow: ellipsis;
             word-break: break-all;
+            flex: 1;
         }
 
         .files-container.list-layout .meta-info {
             display: flex;
-            gap: 1.5rem;
+            gap: 0.75rem;
             align-items: center;
-        }
-
-        .files-container.list-layout .file-size {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-            min-width: 80px;
-            text-align: right;
-        }
-
-        .files-container.list-layout .file-badge {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-color);
-            color: var(--text-muted);
-            padding: 0.25rem 0.6rem;
-            border-radius: 0.375rem;
-            font-size: 0.75rem;
-            font-weight: 500;
-            text-transform: uppercase;
-        }
-
-        .files-container.list-layout .action-btn {
-            background: rgba(255,255,255,0.05);
-            border: none;
-            color: white;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: all 0.2s;
-        }
-        
-        .files-container.list-layout .file-card:hover .action-btn {
-            background: var(--primary-gradient);
-            transform: scale(1.1);
+            flex-shrink: 0;
         }
 
         /* Filter states classes */
@@ -604,15 +576,15 @@
             .header-section h1 { font-size: 1.85rem; }
             .container { margin: 1.5rem auto; }
             
-            /* Make list layout cards collapse on mobile nicely */
             .files-container.list-layout .file-card {
-                grid-template-columns: 36px 1fr auto;
+                padding: 0.75rem;
                 gap: 0.75rem;
-                padding: 0.85rem 1rem;
             }
-            .files-container.list-layout .file-badge { display: none; }
-            .files-container.list-layout .file-size { text-align: left; }
-            .files-container.list-layout .meta-info { gap: 0.5rem; }
+            .files-container.list-layout .card-body {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.35rem;
+            }
             
             .viewer-header { padding: 0.75rem 1rem; }
             .viewer-title { font-size: 0.95rem; max-width: 50%; }
@@ -762,15 +734,6 @@
                             </div>
                         </div>
 
-                        <!-- Only used in List View layout (visually mapped by CSS grid properties) -->
-                        <span class="file-size hidden" id="list-size-{{ $file->id }}">{{ number_format($file->size / 1024 / 1024, 2) }} MB</span>
-                        <span class="file-badge hidden" id="list-badge-{{ $file->id }}">{{ $type }}</span>
-                        
-                        <div class="action-btn hidden" id="list-btn-{{ $file->id }}">
-                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                <polyline points="9 18 15 12 9 6"></polyline>
-                            </svg>
-                        </div>
                     </div>
                 @endforeach
             @endif
@@ -898,17 +861,9 @@
                 filesContainer.classList.remove('list-layout');
                 filesContainer.classList.add('grid-layout');
                 
-                // Keep CSS grid display correct
                 if (emptyState.style.display !== 'flex') {
                     filesContainer.style.display = 'grid';
                 }
-                
-                // Hide helper list UI nodes from grid DOM
-                fileCards.forEach(card => {
-                    card.querySelector('.file-size').classList.add('hidden');
-                    card.querySelector('.file-badge').classList.add('hidden');
-                    card.querySelector('.action-btn').classList.add('hidden');
-                });
             } else {
                 listBtn.classList.add('active');
                 gridBtn.classList.remove('active');
@@ -919,13 +874,6 @@
                 if (emptyState.style.display !== 'flex') {
                     filesContainer.style.display = 'flex';
                 }
-
-                // Show helper list UI nodes
-                fileCards.forEach(card => {
-                    card.querySelector('.file-size').classList.remove('hidden');
-                    card.querySelector('.file-badge').classList.remove('hidden');
-                    card.querySelector('.action-btn').classList.remove('hidden');
-                });
             }
         }
 
