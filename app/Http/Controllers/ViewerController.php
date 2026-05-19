@@ -34,9 +34,17 @@ class ViewerController extends Controller
 
     public function portal(Request $request)
     {
-        $networkIp = $this->getNetworkIp();
-        $port = $request->getPort();
-        $vaultPortalUrl = "http://{$networkIp}" . ($port && $port != 80 ? ":{$port}" : "") . "/vault";
+        $host = $request->getHost();
+        
+        // If it's a domain name (production/Render), use the current public URL
+        if ($host !== 'localhost' && $host !== '127.0.0.1' && !filter_var($host, FILTER_VALIDATE_IP)) {
+            $vaultPortalUrl = $request->getSchemeAndHttpHost() . "/vault";
+        } else {
+            // If it's local development, use the local network IP so devices on the same Wi-Fi can connect
+            $networkIp = $this->getNetworkIp();
+            $port = $request->getPort();
+            $vaultPortalUrl = "http://{$networkIp}" . ($port && $port != 80 ? ":{$port}" : "") . "/vault";
+        }
         
         return view('viewer.portal', compact('vaultPortalUrl'));
     }
