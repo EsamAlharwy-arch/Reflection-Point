@@ -8,7 +8,8 @@ class AdminController extends Controller
 {
     private function getNetworkIp()
     {
-        return \Illuminate\Support\Facades\Cache::remember('network_ip', 3600, function() {
+        $cacheKey = 'network_ip_' . php_uname('n');
+        return \Illuminate\Support\Facades\Cache::remember($cacheKey, 3600, function() {
             $ip = '127.0.0.1';
             try {
                 if (function_exists('socket_create')) {
