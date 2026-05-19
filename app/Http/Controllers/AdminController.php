@@ -49,7 +49,7 @@ class AdminController extends Controller
         
         $networkIp = $this->getNetworkIp();
         $port = $request->getPort();
-        $baseUrl = "http://{$networkIp}" . ($port && $port != 80 ? ":{$port}" : "");
+        $baseUrl = "http://{$networkIp}" . ($port && $port != 80 ? ":{$port}" : "") . $request->getBaseUrl();
 
         return view('admin.dashboard', compact('files', 'baseUrl'));
     }
